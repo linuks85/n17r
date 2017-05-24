@@ -1,0 +1,110 @@
+#ServerBot
+from random import randint
+fmap = open('map.txt', 'r+')
+n = int(fmap.readline())
+
+m = [[''] * (n+1) for i in range(n+1)]
+for i in range(1,n+1):
+    read = fmap.readline().split()
+    for j in range(len(read)):
+        m[i][j+1] = read[j]
+fmap.close()
+
+fpos = open('position.txt', 'r+')
+fxy = open('fxy.txt', 'w+')
+fwin = open('winner.txt', 'w+')
+posX, posY, num = map(int, fpos.readline().split())
+
+bot1d = 0
+bot1r = 0
+bot2d = 0
+bot2r = 0
+
+bot1row = 0
+bot1col = 0
+bot2row = 0
+bot2col = 0  
+
+for i in range(1, n+1):
+    if m[i][i] == '1':
+        bot1d += 1
+    elif m[i][i] == '2':
+        bot2d += 1
+    if m[i][n+1-i] == '1':
+        bot1r += 1
+    elif m[i][n+1-i] == '2':
+        bot2r += 1
+if bot1d == n or bot1r == n:
+    fwin.write('Bot-X is the winner')
+elif bot2d == n or bot2r == n:
+    fwin.write('Bot-O is the winner')
+else:
+    b1 = False
+    b2 = False
+    for i in range(1, n+1):
+        bot1row = 0
+        bot1col = 0
+        bot2row = 0
+        bot2col = 0
+        for j in range(1, n+1):
+            if m[i][j] == '1':
+                bot1row += 1
+            if m[j][i] == '1':
+                bot1col += 1
+            if m[i][j] == '2':
+                bot2row += 1
+            if m[j][i] == '2':
+                bot2col += 1
+        if bot1row == n or bot1col == n:
+            b1 = True
+        if bot2row == n or bot2col == n:
+            b2 = True
+    if b1:
+        fwin.write('Bot-X is the winner')
+    elif b2:
+        fwin.write('Bot-O is the winner')
+    else:
+        counter = 0
+        for c in range(1, n+1):
+            for p in range(1, n+1):
+                if m[c][p] != '0':
+                    counter += 1
+        if counter == n*n:
+            fwin.write('DRAW!')
+        else:
+            fwin.write('Continue...')
+
+if posX == -1 or posY == -1 or num == -1:
+    fxy.write('-1 -1 -1')
+    
+else:
+    fout = open('table.txt', 'w+')
+    fmap = open('map.txt', 'w+')
+    flog = open('log.txt', 'a')
+    fmap.seek(0)
+
+    bot = ''
+    if num == 1:
+        bot = 'X'
+    elif num == 2:
+        bot = 'O'
+        
+    if 1<=posX<=n and 1<=posY<=n and m[posX][posY] == '0':
+        m[posX][posY] = str(num)
+        flog.write(bot + "-bot's move is x(" + str(posX) + "), y(" + str(posY) + ")\n")
+        fxy.write(str(posX) + ' ' + str(posY) + ' ' + str(num))
+    else:
+        flog.write(bot + "-bot's move x(" + str(posX) + "), y(" + str(posY) + ") is ILLEGAL!\n")
+        fxy.write('-1 -1 -1')
+
+    fmap.write(str(n) + '\n')
+    fout.write(str(n) + '\n')
+    for i in range(1,n+1):
+        for j in range(1, n+1):
+            fmap.write(m[i][j]+' ')
+            fout.write(m[i][j]+' ')
+        fmap.write('\n')
+        fout.write('\n')
+    fout.close()
+    fmap.close()
+    flog.close()
