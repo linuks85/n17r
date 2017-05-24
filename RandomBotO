@@ -1,4 +1,4 @@
-#BotX
+#BotO
 from random import randint
 fin = open('table.txt', 'r+')
 fout = open('position.txt', 'w+')
@@ -21,7 +21,7 @@ while b and a[x][y] != 0:
     y = randint(0,n-1)
 
 if b:
-    fout.write(str(x+1) + ' ' + str(y+1) + ' 1')
+    fout.write(str(x+1) + ' ' + str(y+1) + ' 2')
 else:
     fout.write('-1 -1 -1')
 fin.close()
