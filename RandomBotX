@@ -1,0 +1,28 @@
+#BotX
+from random import randint
+fin = open('table.txt', 'r+')
+fout = open('position.txt', 'w+')
+n = int(fin.readline())
+a = []
+for i in range(n):
+    a.append([int(j) for j in fin.readline().split()])
+
+b = False
+for i in range(n):
+    for j in range(n):
+        if a[i][j] == 0:
+            b = True
+
+x = randint(0,n-1)
+y = randint(0,n-1)
+
+while b and a[x][y] != 0:
+    x = randint(0,n-1)
+    y = randint(0,n-1)
+
+if b:
+    fout.write(str(x+1) + ' ' + str(y+1) + ' 1')
+else:
+    fout.write('-1 -1 -1')
+fin.close()
+fout.close()
