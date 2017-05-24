@@ -1,0 +1,69 @@
+from tkinter import *
+import time
+import os
+
+fmap = open('map.txt', 'r+')
+n = int(fmap.readline())
+
+master = Tk()
+master.title('Bot Games')
+canvas_width = 1000
+canvas_height = 640
+w = Canvas(master, width=canvas_width, height=canvas_height)
+w.pack()
+
+size = 620
+offset = 10
+for i in range(n+1):
+    w.create_line(offset-2, i*size/n + offset, size + offset+3, i*size/n + offset, width = 5)
+for i in range(n+1):
+    w.create_line(offset + i*size/n, offset, offset + i*size/n, size + offset, width = 5)
+
+winner = w.create_text(810, 200, font = ('Purisa', 20), text = 'Start Game')
+cnt = 0
+def nextMove():
+    global cnt
+    global winner
+    if cnt%2==0:
+        #os.system('python BotX.py')
+        #os.system('python MeX.py')
+        #os.system('python SmartBotX.py')
+        os.system('BotX.exe')
+    else:
+        os.system('python BotO.py')
+        #os.system('python MeO.py')
+    cnt += 1    
+    os.system('python ServerBot.py')
+    fxy = open('fxy.txt', 'r+')
+    fxy.seek(0)
+    x,y,num = map(int, fxy.readline().split())
+    x = offset + (x*size/n + (x-1)*size/n)/2
+    y = offset + (y*size/n + (y-1)*size/n)/2
+
+    a = ''
+    color = 'black'
+    if num == 1:
+        a = 'X'
+        color = 'red'
+    elif num == 2:
+        a = 'O'
+        color = 'blue'
+    w.create_text(y, x, font = ("Purisa", size//n - offset*n), text=a, fill=color)
+    w.delete(winner)
+    fwin = open('winner.txt', 'r+')
+    s = fwin.readline()
+    if s[4] == 'X':
+        wcolor = 'red'
+    elif s[4] == 'O':
+        wcolor = 'blue'
+    else:
+        wcolor = 'black'
+    winner = w.create_text(810, 200, font = ('Purisa', 20), text = s, fill=wcolor)
+    fxy.close()
+    fwin.close()
+
+P1 = Button(master, text = 'Next move', command = nextMove)
+P1.pack()
+P1.place(bordermode=OUTSIDE, x=650, y=10, height=50, width=330)
+master.wm_attributes("-topmost", 1)
+master.mainloop()
